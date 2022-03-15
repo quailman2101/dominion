@@ -139,7 +139,7 @@ def create_df(owned_sets):
     '''
 
     # Read excel file into dataframe and include only owned cards
-    cards = pd.read_excel('dominion_cards.xlsx')
+    cards = pd.read_csv('dominion_cards.csv')
     boolean_series = cards.set.isin(owned_sets)
     df = cards[boolean_series]
 
@@ -227,6 +227,13 @@ def make_kingdom(df):
     cpp_indexes = list(cpp.index.values)
 
     df_supply = df_supply.drop(labels = cpp_indexes, axis = 0)
+    
+    # Remove all the Ruins
+    ruins = df[(df.name.isin(['Abandoned Mine', 'Ruined Library', ' Ruined Market',
+    'Ruined Village', 'Survivors']))]
+    ruins_indexes = list(ruins.index.values)
+
+    df_supply = df_supply.drop(labels = ruins_indexes, axis = 0)
 
     # Remove all buy one Knight, all but one Castle and the second part of split piles if present
     extras = df[(df["type_2"] == 'Castle') | (df["type_3"] == 'Castle') |
